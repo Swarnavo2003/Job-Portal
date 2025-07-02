@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import connectDB from "./utils/db.js";
 import userRouter from "./routes/user.routes.js";
+import companyRouter from "./routes/company.routes.js";
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(
 
 // api
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/company", companyRouter);
 
 const PORT = process.env.PORT || 3000;
 
