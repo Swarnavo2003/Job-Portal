@@ -6,6 +6,7 @@ import cors from "cors";
 import connectDB from "./utils/db.js";
 import userRouter from "./routes/user.routes.js";
 import companyRouter from "./routes/company.routes.js";
+import jobRouter from "./routes/job.routes.js";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(
 // api
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/company", companyRouter);
+app.use("/api/v1/job", jobRouter);
 
 const PORT = process.env.PORT || 3000;
 
