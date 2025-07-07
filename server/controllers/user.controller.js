@@ -1,10 +1,13 @@
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import getDataUri from "../utils/datauri.js";
+import cloudinary from "../utils/cloudinary.js";
 
 export const register = async (req, res) => {
   try {
     const { fullname, email, phoneNumber, password, role } = req.body;
+    const file = req.file;
 
     if (!fullname || !email || !phoneNumber || !password || !role) {
       return res
@@ -101,7 +104,7 @@ export const logout = async (req, res) => {
   try {
     return res
       .status(200)
-      .clearCookie("token")
+      .cookie("token", "", { maxAge: 0, httpOnly: true })
       .json({ message: "Logout successful", success: true });
   } catch (error) {
     console.log("Error in logout controller", error);
@@ -128,6 +131,20 @@ export const updateProfile = async (req, res) => {
         .json({ message: "User not found", success: false });
     }
 
+    if (file) {
+      const fileUri = getDataUri(file);
+
+      const publicId = user.profile.resume.split("/").pop().split(".")[0];
+      await cloudinary.uploader.destroy(publicId);
+
+      const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+
+      if (cloudResponse) {
+        user.profile.resume = cloudResponse.secure_url;
+        user.profile.resumeOriginalName = file.originalname;
+      }
+    }
+
     if (fullname) user.fullname = fullname;
     if (email) user.email = email;
     if (phoneNumber) user.phoneNumber = phoneNumber;
@@ -150,6 +167,26 @@ export const updateProfile = async (req, res) => {
       .json({ message: "Profile updated successfully", success: true, user });
   } catch (error) {
     console.log("Error in updateProfile controller", error);
+    return res.status(500).json({ message: error.message, success: false });
+  }
+};
+
+export const getProfile = async (req, res) => {
+  try {
+    const userId = req.id;
+    const user = await User.findById(userId)
+      .populate("profile")
+      .select("-password");
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "User not found", success: false });
+    }
+
+    return res.status(200).json({ user, success: true });
+  } catch (error) {
+    console.log("Error in getProfile controller", error);
     return res.status(500).json({ message: error.message, success: false });
   }
 };
