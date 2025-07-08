@@ -8,13 +8,23 @@ import Jobs from "./components/Jobs";
 import Browse from "./components/Browse";
 import Profile from "./components/Profile";
 import JobDescription from "./components/JobDescription";
+import useGetAllJobs from "./hooks/useGetAllJobs";
+import { Loader2 } from "lucide-react";
 
 function App() {
-  const { user, getProfile } = useAuthStore();
+  const { user, getProfile, isFetchingProfile } = useAuthStore();
 
   useEffect(() => {
     getProfile();
   }, [getProfile]);
+  useGetAllJobs();
+
+  if (isFetchingProfile)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="animate-spin size-10" />
+      </div>
+    );
 
   return (
     <BrowserRouter>

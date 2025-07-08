@@ -5,13 +5,14 @@ import { create } from "zustand";
 
 const useAuthStore = create((set) => ({
   user: null,
+  isFetchingProfile: false,
   isLoading: false,
 
   setUser: (user) => set({ user }),
   setIsLoading: (value) => set({ isLoading: value }),
 
   getProfile: async () => {
-    set({ isLoading: true });
+    set({ isFetchingProfile: true });
     try {
       const res = await axiosInstance.get(`${BASE_URL}/user/profile`);
       if (res.data.success) {
@@ -20,7 +21,7 @@ const useAuthStore = create((set) => ({
     } catch (error) {
       console.log(error);
     } finally {
-      set({ isLoading: false });
+      set({ isFetchingProfile: false });
     }
   },
 

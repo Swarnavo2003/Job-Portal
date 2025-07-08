@@ -1,13 +1,12 @@
-import useAuthStore from "@/store/useAuthStore";
 import Navbar from "./shared/Navbar";
 import HeroSection from "./HeroSection";
 import CategoryCarousel from "./CategoryCarousel";
 import LatestJobs from "./LatestJobs";
 import Footer from "./shared/Footer";
+import useGetAllJobs from "@/hooks/useGetAllJobs";
 
 const Home = () => {
-  const { user } = useAuthStore();
-  console.log(user);
+  useGetAllJobs();
   return (
     <div>
       <Navbar />
