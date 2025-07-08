@@ -19,7 +19,13 @@ const Profile = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-5">
             <Avatar className="size-24">
-              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarImage
+                src={
+                  user?.profile?.profilePhoto
+                    ? user?.profile?.profilePhoto
+                    : "https://github.com/shadcn.png"
+                }
+              />
               <AvatarFallback>SC</AvatarFallback>
             </Avatar>
 

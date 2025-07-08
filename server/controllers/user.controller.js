@@ -24,12 +24,21 @@ export const register = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    let cloudResponse;
+    if (file) {
+      const dataUri = getDataUri(file);
+      cloudResponse = await cloudinary.uploader.upload(dataUri.content);
+    }
+
     await User.create({
       fullname,
       email,
       phoneNumber,
       password: hashedPassword,
       role,
+      profile: {
+        profilePhoto: cloudResponse ? cloudResponse.secure_url : "",
+      },
     });
 
     return res
