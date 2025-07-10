@@ -4,7 +4,7 @@ import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 const filterData = [
   {
     filterType: "Location",
-    array: ["Delhi NCR", " Bangalore", "Hyderabad", "Pune", "Mumbai"],
+    array: ["Delhi NCR", "Bangalore", "Hyderabad", "Pune", "Mumbai"],
   },
   {
     filterType: "Industry",
@@ -23,28 +23,33 @@ const filterData = [
   },
 ];
 
-const FilterCard = ({ currentFilters, onFilterChange }) => {
+const FilterCard = ({ selectedFilter, setSelectedFilter }) => {
   return (
     <div className="w-full bg-white rounded-md p-5">
       <h1 className="font-bold text-lg">Filter Jobs</h1>
       <hr className="mt-3" />
 
-      {filterData.map(({ filterType, array }) => (
-        <div key={filterType} className="mt-4">
-          <h2 className="font-bold text-lg">{filterType}</h2>
-          <RadioGroup
-            value={currentFilters[filterType] || ""}
-            onValueChange={(value) => onFilterChange(filterType, value)}
-          >
-            {array.map((item) => (
-              <div key={item} className="flex items-center gap-2 mt-2">
+      <RadioGroup value={selectedFilter} onValueChange={setSelectedFilter}>
+        {filterData.map((data, index) => (
+          <div key={index}>
+            <h1 className="font-bold text-lg">{data.filterType}</h1>
+            {data.array.map((item, itemIndex) => (
+              <div key={itemIndex} className="flex items-center gap-2 mt-2">
                 <RadioGroupItem value={item} />
                 <Label>{item}</Label>
               </div>
             ))}
-          </RadioGroup>
-        </div>
-      ))}
+          </div>
+        ))}
+      </RadioGroup>
+
+      {/* Clear filter button */}
+      <button
+        onClick={() => setSelectedFilter("")}
+        className="mt-4 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+      >
+        Clear Filter
+      </button>
     </div>
   );
 };
