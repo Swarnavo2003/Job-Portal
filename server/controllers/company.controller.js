@@ -1,4 +1,6 @@
 import { Company } from "../models/company.model.js";
+import cloudinary from "../utils/cloudinary.js";
+import getDataUri from "../utils/datauri.js";
 
 export const registerCompany = async (req, res) => {
   try {
@@ -70,8 +72,6 @@ export const updateCompany = async (req, res) => {
     const { name, description, website, location } = req.body;
     const file = req.file;
 
-    // cloudinary
-
     const updateData = { name, description, website, location };
 
     const companyId = req.params.id;
@@ -85,12 +85,26 @@ export const updateCompany = async (req, res) => {
         .json({ message: "Company not found", success: false });
     }
 
-    return res
-      .status(200)
-      .json({
-        message: "Company information updated successfully",
-        success: true,
-      });
+    if (file) {
+      const fileUri = getDataUri(file);
+
+      if (company.logo) {
+        const publicId = company.logo.split("/").pop().split(".")[0];
+        await cloudinary.uploader.destroy(publicId);
+      }
+
+      const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+
+      if (cloudResponse) {
+        company.logo = cloudResponse.secure_url;
+        await company.save();
+      }
+    }
+
+    return res.status(200).json({
+      message: "Company information updated successfully",
+      success: true,
+    });
   } catch (error) {
     console.log("Error in updateCompany controller", error);
     return res.status(500).json({ message: error.message, success: false });

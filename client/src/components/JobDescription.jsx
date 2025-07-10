@@ -4,14 +4,20 @@ import { Button } from "./ui/button";
 import useGetJobById from "@/hooks/useGetJobById";
 import useJobStore from "@/store/useJobStore";
 import { Loader2 } from "lucide-react";
+import useAuthStore from "@/store/useAuthStore";
 
 const JobDescription = () => {
-  const isApplied = true;
-  const { job, isFetchingJobById } = useJobStore();
+  const { user } = useAuthStore();
+  const { job, isFetchingJobById, applyJob } = useJobStore();
 
   const params = useParams();
   const jobId = params.id;
-  useGetJobById(jobId);
+  const refechJob = useGetJobById(jobId);
+
+  const isApplied =
+    job?.applications?.some(
+      (application) => application.applicant === user?._id
+    ) || false;
 
   if (isFetchingJobById || !job) {
     return (
@@ -20,6 +26,12 @@ const JobDescription = () => {
       </div>
     );
   }
+
+  const applyJobHandler = async () => {
+    await applyJob(job._id);
+    refechJob();
+  };
+
   return (
     <div className="max-w-6xl mx-auto my-10 border border-gray-100 rounded-md p-5 shadow-xl shadow-gray-300">
       <div className="flex items-center justify-between">
@@ -37,7 +49,10 @@ const JobDescription = () => {
             </Badge>
           </div>
         </div>
-        <Button disabled={isApplied}>
+        <Button
+          onClick={isApplied ? () => {} : applyJobHandler}
+          disabled={isApplied}
+        >
           {isApplied ? "Applied" : "Apply Now"}
         </Button>
       </div>

@@ -10,6 +10,9 @@ import Profile from "./components/Profile";
 import JobDescription from "./components/JobDescription";
 import useGetAllJobs from "./hooks/useGetAllJobs";
 import { Loader2 } from "lucide-react";
+import Companies from "./components/admin/Companies";
+import CompanyCreate from "./components/admin/CompanyCreate";
+import CompanySetup from "./components/admin/CompanySetup";
 
 function App() {
   const { user, getProfile, isFetchingProfile } = useAuthStore();
@@ -19,7 +22,7 @@ function App() {
   }, [getProfile]);
   useGetAllJobs();
 
-  if (isFetchingProfile)
+  if (isFetchingProfile && !user)
     return (
       <div className="flex justify-center items-center h-screen">
         <Loader2 className="animate-spin size-10" />
@@ -39,6 +42,22 @@ function App() {
         />
         <Route path="/browse" element={user ? <Browse /> : <Login />} />
         <Route path="/profile" element={user ? <Profile /> : <Login />} />
+        <Route
+          path="/admin/companies"
+          element={user && user.role === "recruiter" ? <Companies /> : <Home />}
+        />
+        <Route
+          path="/admin/company/create"
+          element={
+            user && user.role === "recruiter" ? <CompanyCreate /> : <Home />
+          }
+        />
+        <Route
+          path="/admin/company/:id"
+          element={
+            user && user.role === "recruiter" ? <CompanySetup /> : <Home />
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

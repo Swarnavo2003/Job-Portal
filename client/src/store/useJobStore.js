@@ -6,6 +6,7 @@ const useJobStore = create((set) => ({
   allJobs: [],
   job: null,
   isFetchingJobById: false,
+  isApplyingJob: false,
 
   getAllJobs: async () => {
     try {
@@ -29,6 +30,22 @@ const useJobStore = create((set) => ({
       toast.error(error.response.data.message);
     } finally {
       set({ isFetchingJobById: false });
+    }
+  },
+
+  applyJob: async (jobId) => {
+    set({ isApplyingJob: true });
+    try {
+      const res = await axiosInstance.post(
+        `${BASE_URL}/application/apply/${jobId}`
+      );
+      if (res.data.success) {
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    } finally {
+      set({ isApplyingJob: false });
     }
   },
 }));

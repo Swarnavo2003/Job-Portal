@@ -1,5 +1,5 @@
 import useJobStore from "@/store/useJobStore";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 const useGetJobById = (jobId) => {
   const { getJobById } = useJobStore();
@@ -7,6 +7,12 @@ const useGetJobById = (jobId) => {
   useEffect(() => {
     getJobById(jobId);
   }, [getJobById, jobId]);
+
+  const refetch = useCallback(() => {
+    getJobById(jobId);
+  }, [getJobById, jobId]);
+
+  return refetch;
 };
 
 export default useGetJobById;
