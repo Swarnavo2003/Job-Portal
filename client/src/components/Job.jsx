@@ -17,9 +17,9 @@ const Job = ({ job }) => {
     <div className="p-5 rounded-md shadow-xl bg-white border border-gray-100">
       <div className="flex items-center justify-between">
         <p className="text-sm text-gray-600">
-          {daysAgoFunction(job.createdAt) === 0
+          {daysAgoFunction(job?.createdAt) === 0
             ? "Today"
-            : `${daysAgoFunction(job.createdAt)} days ago`}
+            : `${daysAgoFunction(job?.createdAt)} days ago`}
         </p>
         <Button variant="outline" className="rounded-full" size="icon">
           <Bookmark />
@@ -28,32 +28,35 @@ const Job = ({ job }) => {
       <div className="flex items-center gap-2 my-2">
         <Button variant="outline">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarImage
+              src={job?.company?.logo || "https://github.com/shadcn.png"}
+              className="object-cover"
+            />
           </Avatar>
         </Button>
         <div>
-          <h1 className="font-medium text-lg">{job.company.name}</h1>
-          <p className="text-sm text-gray-600">{job.location}</p>
+          <h1 className="font-medium text-lg">{job?.company?.name}</h1>
+          <p className="text-sm text-gray-600">{job?.location}</p>
         </div>
       </div>
 
       <div>
-        <h1 className="font-bold text-lg my-2">{job.title}</h1>
-        <p className="text-sm text-gray-600">{job.description}</p>
+        <h1 className="font-bold text-lg my-2">{job?.title}</h1>
+        <p className="text-sm text-gray-600 truncate">{job?.description}</p>
       </div>
       <div className="flex items-center gap-2 mt-4">
         <Badge variant={"ghost"} className="text-blue-700 font-bold">
-          {job.position} Positions
+          {job?.position} Positions
         </Badge>
         <Badge variant={"ghost"} className="text-red-700 font-bold">
-          {job.jobType}
+          {job?.jobType}
         </Badge>
         <Badge variant={"ghost"} className="text-purple-700 font-bold">
-          {job.salary}LPA
+          {job?.salary}LPA
         </Badge>
       </div>
       <div className="flex items-center gap-4 mt-4">
-        <Button onClick={() => navigate(`/job/${job._id}`)} variant="outline">
+        <Button onClick={() => navigate(`/job/${job?._id}`)} variant="outline">
           Details
         </Button>
         <Button className="bg-purple-600 hover:bg-purple-700">

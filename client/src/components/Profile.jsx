@@ -1,17 +1,32 @@
-import { Contact2, Mail, Pen } from "lucide-react";
+import { Contact2, Loader2, Mail, Pen } from "lucide-react";
 import Navbar from "./shared/Navbar";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Label } from "./ui/label";
 import AppliedJobTable from "./AppliedJobTable";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UpdateProfileDialog from "./UpdateProfileDialog";
 import useAuthStore from "@/store/useAuthStore";
+import useApplicationStore from "@/store/useApplicationStore";
 
 const Profile = () => {
   const [open, setOpen] = useState(false);
   const { user } = useAuthStore();
+  const { getAppliedJobs, isFetchingAppliedJobs } = useApplicationStore();
+
+  useEffect(() => {
+    getAppliedJobs();
+  }, []);
+
+  if (isFetchingAppliedJobs) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Loader2 className="animate-spin size-10" />
+      </div>
+    );
+  }
+
   return (
     <div>
       <Navbar />

@@ -13,6 +13,9 @@ import { Loader2 } from "lucide-react";
 import Companies from "./components/admin/Companies";
 import CompanyCreate from "./components/admin/CompanyCreate";
 import CompanySetup from "./components/admin/CompanySetup";
+import AdminJobs from "./components/admin/AdminJobs";
+import PostJob from "./components/admin/PostJob";
+import Applicants from "./components/admin/Applicants";
 
 function App() {
   const { user, getProfile, isFetchingProfile } = useAuthStore();
@@ -56,6 +59,20 @@ function App() {
           path="/admin/company/:id"
           element={
             user && user.role === "recruiter" ? <CompanySetup /> : <Home />
+          }
+        />
+        <Route
+          path="/admin/jobs"
+          element={user && user.role === "recruiter" ? <AdminJobs /> : <Home />}
+        />
+        <Route
+          path="/admin/job/create"
+          element={user && user.role === "recruiter" ? <PostJob /> : <Home />}
+        />
+        <Route
+          path="/admin/job/:id/applicants"
+          element={
+            user && user.role === "recruiter" ? <Applicants /> : <Home />
           }
         />
       </Routes>

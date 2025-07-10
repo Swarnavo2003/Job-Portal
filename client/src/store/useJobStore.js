@@ -5,10 +5,18 @@ import { create } from "zustand";
 const useJobStore = create((set) => ({
   allJobs: [],
   job: null,
+  adminJobs: [],
+  isFetchingAllJobs: false,
   isFetchingJobById: false,
+  isFetchingAdminJobs: false,
   isApplyingJob: false,
+  isCreatingJob: false,
+
+  searchQuery: "",
+  setSearchQuery: (query) => set({ searchQuery: query }),
 
   getAllJobs: async () => {
+    set({ isFetchingAllJobs: true });
     try {
       const res = await axiosInstance.get(`${BASE_URL}/job/get`);
       if (res.data.success) {
@@ -16,6 +24,8 @@ const useJobStore = create((set) => ({
       }
     } catch (error) {
       toast.error(error.response.data.message);
+    } finally {
+      set({ isFetchingAllJobs: false });
     }
   },
 
@@ -33,6 +43,20 @@ const useJobStore = create((set) => ({
     }
   },
 
+  getAdminJobs: async () => {
+    set({ isFetchingAdminJobs: true });
+    try {
+      const res = await axiosInstance.get(`${BASE_URL}/job/getadminjobs`);
+      if (res.data.success) {
+        set({ adminJobs: res.data.jobs });
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    } finally {
+      set({ isFetchingAdminJobs: false });
+    }
+  },
+
   applyJob: async (jobId) => {
     set({ isApplyingJob: true });
     try {
@@ -46,6 +70,22 @@ const useJobStore = create((set) => ({
       toast.error(error.response.data.message);
     } finally {
       set({ isApplyingJob: false });
+    }
+  },
+
+  createJob: async (data, navigate) => {
+    set({ isCreatingJob: true });
+    try {
+      const res = await axiosInstance.post(`${BASE_URL}/job/post`, data);
+
+      if (res.data.success) {
+        toast.success(res.data.message);
+        navigate("/admin/jobs");
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    } finally {
+      set({ isCreatingJob: false });
     }
   },
 }));

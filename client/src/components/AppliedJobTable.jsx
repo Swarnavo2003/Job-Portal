@@ -1,3 +1,4 @@
+import useApplicationStore from "@/store/useApplicationStore";
 import { Badge } from "./ui/badge";
 import {
   Table,
@@ -10,6 +11,8 @@ import {
 } from "./ui/table";
 
 const AppliedJobTable = () => {
+  const { appliedJobs } = useApplicationStore();
+  console.log(appliedJobs);
   return (
     <div>
       <Table>
@@ -23,16 +26,30 @@ const AppliedJobTable = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {[1, 2].map((item, index) => (
-            <TableRow key={index}>
-              <TableCell>01/01/2023</TableCell>
-              <TableCell>Software Engineer</TableCell>
-              <TableCell>Google</TableCell>
-              <TableCell className="text-right">
-                <Badge>Selected</Badge>
-              </TableCell>
-            </TableRow>
-          ))}
+          {appliedJobs.length <= 0 ? (
+            <span>No jobs found</span>
+          ) : (
+            appliedJobs.map((application) => (
+              <TableRow key={application._id}>
+                <TableCell>{application?.createdAt.split("T")[0]}</TableCell>
+                <TableCell>{application?.job?.title}</TableCell>
+                <TableCell>{application?.job?.company?.name}</TableCell>
+                <TableCell className="text-right">
+                  <Badge
+                    className={
+                      application?.status === "pending"
+                        ? "bg-gray-500"
+                        : application?.status === "accepted"
+                        ? "bg-green-500"
+                        : "bg-red-500"
+                    }
+                  >
+                    {application?.status}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </div>

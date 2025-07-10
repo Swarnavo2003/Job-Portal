@@ -23,26 +23,28 @@ const filterData = [
   },
 ];
 
-const FilterCard = () => {
+const FilterCard = ({ currentFilters, onFilterChange }) => {
   return (
     <div className="w-full bg-white rounded-md p-5">
       <h1 className="font-bold text-lg">Filter Jobs</h1>
       <hr className="mt-3" />
-      <RadioGroup>
-        {filterData.map((data, index) => (
-          <div key={index}>
-            <h1 className="font-bold text-lg">{data.filterType}</h1>
-            {data.array.map((item, index) => {
-              return (
-                <div key={index} className="flex items-center gap-2 mt-2">
-                  <RadioGroupItem value={item} />
-                  <Label>{item}</Label>
-                </div>
-              );
-            })}
-          </div>
-        ))}
-      </RadioGroup>
+
+      {filterData.map(({ filterType, array }) => (
+        <div key={filterType} className="mt-4">
+          <h2 className="font-bold text-lg">{filterType}</h2>
+          <RadioGroup
+            value={currentFilters[filterType] || ""}
+            onValueChange={(value) => onFilterChange(filterType, value)}
+          >
+            {array.map((item) => (
+              <div key={item} className="flex items-center gap-2 mt-2">
+                <RadioGroupItem value={item} />
+                <Label>{item}</Label>
+              </div>
+            ))}
+          </RadioGroup>
+        </div>
+      ))}
     </div>
   );
 };
